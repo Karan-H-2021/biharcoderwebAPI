@@ -1,0 +1,80 @@
+name: 'CodeReady Dependency Analytics'
+description: 'Analyse vulnerabilities in application dependencies'
+author: 'Red Hat'
+branding:
+  icon: circle
+  color: red
+inputs:
+  manifest_directory:
+    description: |
+      Path to the directory containing the manifest_file.
+    required: false
+  manifest_file:
+    description: |
+      Name (basename) of the manifest file to analyze. This file must exist in the manifest_directory.
+    required: false
+  deps_install_cmd:
+    description: |
+      Command to use for dependencies installation instead of using the
+      default commands.
+    required: false
+  analysis_report_name:
+    description: Name of the file to save the analysis report
+    required: false
+    default: crda_analysis_report
+  snyk_token:
+    description: Snyk token to be used to authenticate to the CRDA
+    required: false
+  crda_key:
+    description: Existing CRDA key to identify the existing user
+    required: false
+  github_token:
+    description: Github token to upload SARIF file to the GitHub
+    required: false
+    default: ${{ github.token }}
+  upload_sarif:
+    description: |
+      Upload the generated SARIF file, by default it is set to "true".
+      If you don't want to upload SARIF file set this input to "false"
+    required: false
+    default: "true"
+  upload_artifact:
+    description: |
+      Upload the generated SARIF and JSON file as an artifact.
+    required: false
+    default: "true"
+  artifact_filename:
+    description: |
+      File name of the artifact to upload.
+      By default it is named as 'crda_report'
+    required: false
+    default: "crda_report"
+  consent_telemetry:
+    description: |
+      CRDA collects anonymous usage data, and is disabled by default.
+      If you want this behaviour set this to "true"
+    required: false
+    default: "false"
+  fail_on:
+    description: |
+      Fail the workflow if vulnerability is found in the project.
+      This will lead to workflow failure and SARIF file would not be uploaded.
+      To set failure when vulnerability severity level is either "error" or "warning" set this input to "warning".
+      By default it is set to fail when severity level is "error",
+      or if you don't want to fail the action set this input to "never"
+    required: false
+    default: "error"
+
+outputs:
+  crda_report_json:
+    description: "Generated CRDA Analysis Report in JSON format"
+  crda_report_sarif:
+    description: "Generated CRDA Analysis Report in SARIF format"
+  report_link:
+    description: "CRDA analysis report link"
+  artifact_name:
+    description: "Name of the uploaded artifact"
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
